@@ -4,7 +4,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 
 
-class PostSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """Serializer for the user model"""
 
     class Meta:
