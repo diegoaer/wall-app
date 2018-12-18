@@ -10,3 +10,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'password')
+
+    def create(self, validated_data):
+        instance = super(UserSerializer, self).create(validated_data)
+        instance.set_password(validated_data['password'])
+        return instance
