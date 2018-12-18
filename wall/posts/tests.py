@@ -16,12 +16,12 @@ class PostModelTests(TestCase):
     def setup(self):
         """Creates the user that will be used in the tests"""
         self.user = User.objects.create_user(
-            email="test@test.com", username="test", password="GreatPassword123"
+            email='test@test.com', username='test', password='GreatPassword123'
         )
 
     def test_create_post(self):
         """Tests the creation of a normal post"""
-        content = "Hi!"
+        content = 'Hi!'
         post = Post(user=self.user, content=content)
         post.save()
         post = Post.objects.get(user=self.user, content=content)
@@ -30,9 +30,9 @@ class PostModelTests(TestCase):
 
     def test_delete_post_creator(self):
         """Test what happens when a creator of a post is deleted"""
-        content = "Hi!"
+        content = 'Hi!'
         user = User.objects.create_user(
-            email="test@test.com", username="test1", password="GreatPassword123"
+            email='test@test.com', username='test1', password='GreatPassword123'
         )
         post = Post(user=user, content=content)
         post.save()
