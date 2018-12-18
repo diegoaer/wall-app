@@ -15,3 +15,8 @@ class UserSerializer(serializers.ModelSerializer):
         instance = super(UserSerializer, self).create(validated_data)
         instance.set_password(validated_data['password'])
         return instance
+
+    def to_representation(self, instance):
+        ret = super(UserSerializer, self).to_representation(instance)
+        del ret['password']
+        return ret
