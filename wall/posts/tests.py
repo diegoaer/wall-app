@@ -2,7 +2,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls.base import reverse
-from rest_framework.test import RequestsClient
+from django.test import Client
 from rest_framework import status
 
 from .models import Post
@@ -58,16 +58,31 @@ class PostViewsetTest(BasePostTest):
 
     def __init__(self, *args, **kwargs):
         super(PostViewsetTest, self).__init__(*args, **kwargs)
-        self.client = RequestsClient()
+        self.token = None
+
+    def setUp(self):
+        super(PostViewsetTest, self).setUp()
+        auth_response = self.client.post(
+            reverse('token-auth'),
+            format='json',
+            data={
+                'username': self.user.username,
+                'password': 'GreatPassword123'
+            }
+        )
+        self.token = auth_response.data['token']
 
     def test_create_post(self):
         """Tests the creation of a post"""
         content = 'Hi!!'
         response = self.client.post(
-            reverse('post-list'), format='json', data={
+            reverse('post-list'),
+            format='json',
+            data={
                 'content': content,
                 'user': self.user.id
-            }
+            },
+            HTTP_AUTHORIZATION='Token %s' % self.token
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Post.objects.get().content, content)
@@ -75,10 +90,13 @@ class PostViewsetTest(BasePostTest):
     def test_create_empty_post(self):
         """Tests the creation of an empty post"""
         response = self.client.post(
-            reverse('post-list'), format='json', data={
+            reverse('post-list'),
+            format='json',
+            data={
                 'content': '',
                 'user': self.user.id
-            }
+            },
+            HTTP_AUTHORIZATION='Token %s' % self.token
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['content'][0], 'This field may not be blank.')
@@ -93,22 +111,24 @@ class PostViewsetTest(BasePostTest):
         user = User.objects.create_user(
             email='test@test.com', username='test2', password='GreatPassword123'
         )
-        response = self.client.post(
+        self.client.post(
             reverse('post-list'),
             format='json',
             data={
                 'content': 'Hi this is a test',
                 'user': self.user.id
-            }
+            },
+            HTTP_AUTHORIZATION='Token %s' % self.token
         )
-        response = self.client.post(
+        self.client.post(
             reverse('post-list'),
             format='json',
             data={
                 # Translation: This test has weird characters!
                 'content': '¡¡Éste test tiene caractéres rarós!!',
                 'user': user.id
-            }
+            },
+            HTTP_AUTHORIZATION='Token %s' % self.token
         )
         user.delete()
         response = self.client.get(reverse('post-list'))
