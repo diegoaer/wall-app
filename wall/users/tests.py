@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.urls.base import reverse
+from django.core import mail
 from rest_framework.test import RequestsClient
 from rest_framework import status
 
@@ -25,7 +26,7 @@ class PostViewsetTest(TestCase):
             data={
                 'username': username,
                 'password': password,
-                'email': 'test@guerrillamail.com'  # see emails in guerrillamail.com
+                'email': 'test@test.com'
             }
         )
         user = User.objects.get(username=username)
@@ -41,7 +42,7 @@ class PostViewsetTest(TestCase):
             data={
                 'username': username,
                 'password': '',
-                'email': 'test@guerrillamail.com'  # see emails in guerrillamail.com
+                'email': 'test@test.com'
             }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -55,7 +56,7 @@ class PostViewsetTest(TestCase):
             data={
                 'username': 'test',
                 'password': 'a',
-                'email': 'test@guerrillamail.com'  # see emails in guerrillamail.com
+                'email': 'test@test.com'
             }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -72,7 +73,7 @@ class PostViewsetTest(TestCase):
             data={
                 'username': 'test',
                 'password': 'admin123',
-                'email': 'test@guerrillamail.com'  # see emails in guerrillamail.com
+                'email': 'test@test.com'
             }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -86,7 +87,7 @@ class PostViewsetTest(TestCase):
             data={
                 'username': 'test',
                 'password': '56482852197',
-                'email': 'test@guerrillamail.com'  # see emails in guerrillamail.com
+                'email': 'test@test.com'
             }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -100,10 +101,44 @@ class PostViewsetTest(TestCase):
             data={
                 'username': 'theBestUserName',
                 'password': 'theBestUserName',
-                'email': 'test@guerrillamail.com'  # see emails in guerrillamail.com
+                'email': 'test@test.com'
             }
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data['non_field_errors'][0], 'The password is too similar to the username.'
         )
+
+    def test_user_email_on_creation(self):
+        """Tests if the email is sent on user creation"""
+        # sends an email
+        self.client.post(
+            reverse('user-list'),
+            format='json',
+            data={
+                'username': 'test1',
+                'password': 'SuchAnwesomePassword',
+                'email': 'test@test.com'
+            }
+        )
+        # does not send email (short password)
+        self.client.post(
+            reverse('user-list'),
+            format='json',
+            data={
+                'username': 'test2',
+                'password': '123',
+                'email': 'test@test.com'
+            }
+        )
+        # sends an email
+        self.client.post(
+            reverse('user-list'),
+            format='json',
+            data={
+                'username': 'test2',
+                'password': 'SuchAnwesomePassword',
+                'email': 'test@test.com'
+            }
+        )
+        self.assertEqual(len(mail.outbox), 2)
