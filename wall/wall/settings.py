@@ -117,6 +117,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Email backend
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Rest Framework
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
