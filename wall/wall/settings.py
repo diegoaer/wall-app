@@ -24,7 +24,7 @@ SECRET_KEY = '_w1wd0&ei%bctdil=ua1pzy^g8r5#_j4-=9&h25spfy5vp5v$k'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.0.2.2', 'localhost']
 
 # Application definition
 
@@ -124,6 +124,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Rest Framework
 
 REST_FRAMEWORK = {
+    'DATETIME_FORMAT': ('%Y-%m-%dT%H:%M:%SZ%Z'),
+    'DATETIME_INPUT_FORMATS': ['%Y-%m-%dT%H:%M:%SZ%Z'],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
