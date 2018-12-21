@@ -9,6 +9,6 @@ from .serializers import PostSerializer
 # Create your views here.
 class PostViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericViewSet):
     """Enpoints for creation and listing of Posts"""
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by('-date')
     serializer_class = PostSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
