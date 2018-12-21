@@ -8,9 +8,11 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import gt.com.diego.wallapp.api.APIEndpointInterface;
 import gt.com.diego.wallapp.content.Post;
+import gt.com.diego.wallapp.content.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,6 +54,31 @@ public class APIConnection {
     }
 
     /**
+     * Logs a user in
+     *
+     * @param user the user to be logged in
+     */
+    public LiveData<User> tokenAuth(User user) {
+        final MutableLiveData<User> responseToken = new MutableLiveData<>();
+        apiService.tokenAuth(user).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull
+                    Response<User> response) {
+                if (response.isSuccessful()) {
+                    responseToken.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                Log.e("API", t.getMessage());
+                t.printStackTrace();
+            }
+        });
+        return responseToken;
+    }
+
+    /**
      * Gets the posts from the server and adds it to the LiveData
      */
     public void getPosts(final MutableLiveData<List<Post>> responseData) {
@@ -69,6 +96,27 @@ public class APIConnection {
 
             @Override
             public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
+                Log.e("API", t.getMessage());
+                t.printStackTrace();
+            }
+        });
+    }
+
+    /**
+     * Creates a new post in the server
+     *
+     * @param post the post to be created
+     * @param auth the authentication string
+     */
+    public void postPost(Post post, String auth) {
+        apiService.createPost(post, auth).enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                Log.e("API", response.code() + "");
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
                 Log.e("API", t.getMessage());
                 t.printStackTrace();
             }

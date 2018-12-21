@@ -8,10 +8,15 @@ import java.util.Date;
  * A post in the wall
  */
 public class Post {
-    private int id;
+    private Integer id;
     private String content;
     private String user;
     private Date date;
+
+    public Post(String content) {
+        user = ""; // The user cant be None
+        this.content = content;
+    }
 
     public int getId() {
         return id;

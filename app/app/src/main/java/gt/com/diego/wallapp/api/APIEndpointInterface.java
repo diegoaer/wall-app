@@ -7,6 +7,7 @@ import gt.com.diego.wallapp.content.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -25,12 +26,18 @@ public interface APIEndpointInterface {
      * Creates a post
      */
     @POST("posts/")
-    Call<Post> createPost(@Body Post post);
+    Call<Post> createPost(@Body Post post, @Header("Authorization") String auth);
 
     /**
      * Creates a user
      */
-    @POST("user/")
+    @POST("users/")
     Call<User> createUser(@Body User user);
+
+    /**
+     * Logs in and returns the user token
+     */
+    @POST("auth/")
+    Call<User> tokenAuth(@Body User user);
 
 }
