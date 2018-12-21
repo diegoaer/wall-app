@@ -22,8 +22,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class APIConnection {
     private static APIConnection instance;
-    private APIEndpointInterface apiService;
     private String BASE_URL = "http://10.0.2.2:8000/";
+    private APIEndpointInterface apiService;
+    private int lastUpdate;
 
     /**
      * Creates the the apiService object
@@ -54,18 +55,20 @@ public class APIConnection {
      * Gets the posts from the server and adds it to the LiveData
      */
     public void getPosts(final MutableLiveData<List<Post>> responseData) {
-        apiService.postList().enqueue(new Callback<List<Post>>() {
+        apiService.postList(lastUpdate).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(@NonNull Call<List<Post>> call,
                                    @NonNull Response<List<Post>> response) {
-                if (response.isSuccessful()) {
-                    responseData.setValue(response.body());
+                if (response.isSuccessful() && response.body() != null &&
+                        response.body().size() > 0) {
+                    List<Post> responseBody = response.body();
+                    lastUpdate = responseBody.get(responseBody.size() - 1).getId();
+                    responseData.setValue(responseBody);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
-                responseData.setValue(null);
                 Log.e("API", t.getMessage());
                 t.printStackTrace();
             }

@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Interface for the API
@@ -18,7 +19,7 @@ public interface APIEndpointInterface {
      * Gets the posts list from the server
      */
     @GET("posts/")
-    Call<List<Post>> postList();
+    Call<List<Post>> postList(@Query("since") int since);
 
     /**
      * Creates a post
