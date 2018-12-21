@@ -18,12 +18,9 @@ class BasePostTest(TestCase):
 
     def setUp(self):
         """Creates the user that will be used in the tests"""
-        try:
-            self.user = User.objects.get(username='test')
-        except User.DoesNotExist:
-            self.user = User.objects.create_user(
-                email='test@test.com', username='test', password='GreatPassword123'
-            )
+        self.user = User.objects.create_user(
+            email='test@test.com', username='test', password='GreatPassword123'
+        )
 
 
 class PostModelTests(BasePostTest):
@@ -73,28 +70,38 @@ class PostViewsetTest(BasePostTest):
 
     def test_create_post(self):
         """Tests the creation of a post"""
+        self.user = User.objects.create_user(
+            email='test@test.com', username='test23', password='GreatPassword123'
+        )
+        auth_response = self.client.post(
+            reverse('token-auth'),
+            format='json',
+            data={
+                'username': self.user.username,
+                'password': 'GreatPassword123'
+            }
+        )
+        self.token = auth_response.data['token']
         content = 'Hi!!'
         response = self.client.post(
             reverse('post-list'),
             format='json',
             data={
                 'content': content,
-                'user': self.user.id
+                'user': ''
             },
             HTTP_AUTHORIZATION='Token %s' % self.token
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Post.objects.get().content, content)
+        self.assertEqual(Post.objects.get().user, self.user)
 
     def test_create_empty_post(self):
         """Tests the creation of an empty post"""
         response = self.client.post(
             reverse('post-list'),
             format='json',
-            data={
-                'content': '',
-                'user': self.user.id
-            },
+            data={'content': ''},
             HTTP_AUTHORIZATION='Token %s' % self.token
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
