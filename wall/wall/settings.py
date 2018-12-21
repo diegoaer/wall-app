@@ -124,8 +124,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Rest Framework
 
 REST_FRAMEWORK = {
-    'DATETIME_FORMAT': ('%Y-%m-%dT%H:%M:%SZ%Z'),
-    'DATETIME_INPUT_FORMATS': ['%Y-%m-%dT%H:%M:%SZ%Z'],
+    'DATETIME_FORMAT': ('%Y-%m-%dT%H:%M:%S%z'),
+    'DATETIME_INPUT_FORMATS': ['%Y-%m-%dT%H:%M:%S%z'],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
