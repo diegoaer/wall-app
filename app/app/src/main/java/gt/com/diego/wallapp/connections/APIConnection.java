@@ -1,7 +1,5 @@
 package gt.com.diego.wallapp.connections;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -9,6 +7,8 @@ import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import gt.com.diego.wallapp.api.APIEndpointInterface;
 import gt.com.diego.wallapp.content.Post;
 import retrofit2.Call;
