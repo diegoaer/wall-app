@@ -8,3 +8,4 @@ class Post(models.Model):
     """A wall post"""
     content = models.TextField()
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    date = models.DateTimeField(auto_now_add=True)
