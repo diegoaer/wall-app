@@ -11,6 +11,12 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('id', 'content', 'user', 'date')
 
+    def validate_user(self, value):
+        """If the user is none set the current user as poster"""
+        if value is None:
+            return self.context['request'].user
+        return value
+
     def to_representation(self, instance):
         """Returns the username instead of the user id"""
         ret = super(PostSerializer, self).to_representation(instance)
