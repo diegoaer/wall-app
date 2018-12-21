@@ -16,10 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingLeft="16dp"
-            android:paddingTop="8dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="8dp" />
+            android:paddingLeft="@dimen/normal_space"
+            android:paddingTop="@dimen/half_space"
+            android:paddingRight="@dimen/normal_space"
+            android:paddingBottom="@dimen/half_space" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButton"
@@ -27,8 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="@dimen/normal_space"
+            android:layout_marginBottom="@dimen/normal_space"
             android:background="@color/colorAccent"
             android:clickable="true"
             android:focusable="true"
