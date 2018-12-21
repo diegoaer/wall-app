@@ -32,6 +32,7 @@
             android:background="@color/colorAccent"
             android:clickable="true"
             android:focusable="true"
+            android:onClick="openCreatePostActivity"
             app:srcCompat="@drawable/ic_add_white_24dp" />
 
     </RelativeLayout>
