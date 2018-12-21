@@ -9,7 +9,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('content', 'user', 'date')
+        fields = ('id', 'content', 'user', 'date')
 
     def to_representation(self, instance):
         """Returns the username instead of the user id"""
