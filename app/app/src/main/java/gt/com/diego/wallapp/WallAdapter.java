@@ -38,7 +38,7 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.PostViewHolder
      */
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        holder.bindData(posts.get(position));
+        holder.bindData(posts.get(posts.size() - 1 - position));
     }
 
     /**
