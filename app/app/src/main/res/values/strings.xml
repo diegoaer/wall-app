@@ -5,5 +5,7 @@
     <string name="wrote_in_wall">wrote in the MagicWall:</string>
     <string name="on">on</string>
 
+    <string name="create_new_post">Oh! MagicWall I want to tell you&#8230;</string>
     <string name="content">Content</string>
+    <string name="say_to_wall">Say to the wall!</string>
 </resources>
