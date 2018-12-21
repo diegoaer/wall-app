@@ -4,4 +4,6 @@
     <string name="deleted_user">Deleted User</string>
     <string name="wrote_in_wall">wrote in the MagicWall:</string>
     <string name="on">on</string>
+
+    <string name="content">Content</string>
 </resources>
