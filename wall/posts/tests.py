@@ -133,3 +133,43 @@ class PostViewsetTest(BasePostTest):
         response = self.client.get(reverse('post-list'))
         serializer = PostSerializer(Post.objects.all(), many=True)
         self.assertEqual(response.data, serializer.data)
+
+    def test_list_filtering_posts(self):
+        """Tests that post are filtered out if since parameter is given"""
+        user = User.objects.create_user(
+            email='test@test.com', username='test2', password='GreatPassword123'
+        )
+        self.client.post(
+            reverse('post-list'),
+            format='json',
+            data={
+                'content': 'Hi this is a test',
+                'user': self.user.id
+            },
+            HTTP_AUTHORIZATION='Token %s' % self.token
+        )
+        self.client.post(
+            reverse('post-list'),
+            format='json',
+            data={
+                # Translation: This test has weird characters!
+                'content': '¡¡Éste test tiene caractéres rarós!!',
+                'user': user.id
+            },
+            HTTP_AUTHORIZATION='Token %s' % self.token
+        )
+        self.client.post(
+            reverse('post-list'),
+            format='json',
+            data={
+                'content': 'Another post',
+                'user': user.id
+            },
+            HTTP_AUTHORIZATION='Token %s' % self.token
+        )
+        user.delete()
+        response = self.client.get(reverse('post-list'), {'since': 1})
+        serializer = PostSerializer(Post.objects.all(), many=True)
+        self.assertNotEqual(response.data, serializer.data)
+        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data[1]['id'], 3)
