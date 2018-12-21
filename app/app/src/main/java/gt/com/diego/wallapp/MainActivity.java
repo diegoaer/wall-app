@@ -24,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private WallViewModel wallViewModel;
     private SwipeRefreshLayout refreshLayout;
 
-    private ArrayList<Post> posts;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         wallContainer = findViewById(R.id.wall_container);
         wallViewModel = ViewModelProviders.of(this).get(MainActivity.WallViewModel.class);
         refreshLayout = findViewById(R.id.swipeRefresh);
-        posts = new ArrayList<>();
 
         refreshLayout.setOnRefreshListener(new OnRefreshWallListener());
 
@@ -46,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
      * Initilizes the RecylerView for the wall
      */
     private void initWallRecyclerView() {
-        wallAdapter = new WallAdapter(posts);
+        wallAdapter = new WallAdapter(wallViewModel.posts);
         wallContainer.setLayoutManager(new LinearLayoutManager(this));
         wallContainer.setHasFixedSize(true);
         wallContainer.setAdapter(wallAdapter);
@@ -57,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
      * Observes changes to the wallViewModel's postList
      */
     private void observeData() {
-        wallViewModel.postList.observe(this, new Observer<List<Post>>() {
+        wallViewModel.newPostList.observe(this, new Observer<List<Post>>() {
             /**
              * Adds the new posts to the posts and tells the wallAdapter that there are new changes
              * @param newPosts the new posts
@@ -65,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<Post> newPosts) {
                 if (newPosts != null) {
-                    posts.addAll(newPosts);
+                    wallViewModel.posts.addAll(newPosts);
                     wallAdapter.notifyDataSetChanged();
                 }
             }
@@ -76,15 +73,17 @@ public class MainActivity extends AppCompatActivity {
      * Holds the postList
      */
     public static class WallViewModel extends ViewModel {
-        private final MutableLiveData<List<Post>> postList;
+        private final MutableLiveData<List<Post>> newPostList;
+        private final List<Post> posts;
 
         public WallViewModel() {
-            postList = new MutableLiveData<>();
+            newPostList = new MutableLiveData<>();
+            posts = new ArrayList<>();
             updatePosts();
         }
 
         private void updatePosts() {
-            APIConnection.getInstance().getPosts(postList);
+            APIConnection.getInstance().getPosts(newPostList);
         }
     }
 
