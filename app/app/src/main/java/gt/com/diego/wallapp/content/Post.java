@@ -1,8 +1,12 @@
 package gt.com.diego.wallapp.content;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/** A post in the wall */
+/**
+ * A post in the wall
+ */
 public class Post {
     private String content;
     private String user;
@@ -33,5 +37,10 @@ public class Post {
     public Post setDate(Date date) {
         this.date = date;
         return this;
+    }
+
+    public String getFormattedDate() {
+        DateFormat format = SimpleDateFormat.getDateTimeInstance();
+        return format.format(date);
     }
 }
