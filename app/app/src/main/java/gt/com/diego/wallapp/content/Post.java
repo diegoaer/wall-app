@@ -8,9 +8,19 @@ import java.util.Date;
  * A post in the wall
  */
 public class Post {
+    private int id;
     private String content;
     private String user;
     private Date date;
+
+    public int getId() {
+        return id;
+    }
+
+    public Post setId(int id) {
+        this.id = id;
+        return this;
+    }
 
     public String getContent() {
         return content;
