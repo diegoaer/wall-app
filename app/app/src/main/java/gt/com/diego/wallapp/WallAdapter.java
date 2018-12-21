@@ -72,7 +72,10 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.PostViewHolder
          * @param post the post that the viewholder represents
          */
         private void bindData(final Post post) {
-            usernameTextView.setText(post.getUser());
+            if (post.getUser() == null)
+                usernameTextView.setText(R.string.deleted_user);
+            else
+                usernameTextView.setText(post.getUser());
             dateTextView.setText(post.getFormattedDate());
             contentTextView.setText(post.getContent());
         }
