@@ -53,8 +53,15 @@ public class MainActivity extends AppCompatActivity {
         wallContainer.setItemAnimator(new DefaultItemAnimator());
     }
 
+    /**
+     * Observes changes to the wallViewModel's postList
+     */
     private void observeData() {
         wallViewModel.postList.observe(this, new Observer<List<Post>>() {
+            /**
+             * Adds the new posts to the posts and tells the wallAdapter that there are new changes
+             * @param newPosts the new posts
+             */
             @Override
             public void onChanged(@Nullable List<Post> newPosts) {
                 if (newPosts != null) {
@@ -65,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Holds the postList
+     */
     public static class WallViewModel extends ViewModel {
         private final MutableLiveData<List<Post>> postList;
 

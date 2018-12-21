@@ -51,6 +51,9 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.PostViewHolder
         return posts.size();
     }
 
+    /**
+     * @see RecyclerView.ViewHolder
+     */
     class PostViewHolder extends RecyclerView.ViewHolder {
         private TextView dateTextView;
         private TextView usernameTextView;
@@ -63,7 +66,12 @@ public class WallAdapter extends RecyclerView.Adapter<WallAdapter.PostViewHolder
             dateTextView = itemView.findViewById(R.id.date);
         }
 
-        void bindData(final Post post) {
+        /**
+         * Adds the post's data to the view
+         *
+         * @param post the post that the viewholder represents
+         */
+        private void bindData(final Post post) {
             usernameTextView.setText(post.getUser());
             dateTextView.setText(post.getFormattedDate());
             contentTextView.setText(post.getContent());
