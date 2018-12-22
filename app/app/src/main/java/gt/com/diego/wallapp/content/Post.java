@@ -13,9 +13,8 @@ public class Post {
     private String user;
     private Date date;
 
-    public Post(String content) {
+    public Post() {
         user = ""; // The user cant be None
-        this.content = content;
     }
 
     public int getId() {

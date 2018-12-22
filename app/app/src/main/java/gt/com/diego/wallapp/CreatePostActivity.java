@@ -29,7 +29,7 @@ public class CreatePostActivity extends AppCompatActivity {
         if (content != null) {
             LiveData<Integer> data = APIConnection
                     .getInstance()
-                    .postPost(new Post(content.toString()), user.getToken());
+                    .postPost(new Post().setContent(content.toString()), user.getToken());
             data.observe(this, new Observer<Integer>() {
                 @Override
                 public void onChanged(Integer integer) {

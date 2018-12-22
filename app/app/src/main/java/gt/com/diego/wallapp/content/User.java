@@ -12,11 +12,6 @@ public class User implements Serializable {
     private String email;
     private String token;
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
     public String getUsername() {
         return username;
     }
