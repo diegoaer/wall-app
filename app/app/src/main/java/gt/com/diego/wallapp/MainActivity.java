@@ -3,6 +3,9 @@ package gt.com.diego.wallapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     public void openCreatePostActivity(View view) {
         Intent intent = new Intent(this, CreatePostActivity.class);
         intent.putExtra("user", user);
-        startActivityForResult(intent, LOGIN_RESULT);
+        startActivity(intent);
     }
 
     /**
@@ -109,6 +112,35 @@ public class MainActivity extends AppCompatActivity {
                     user = (User) data.getSerializableExtra("user");
                 }
                 break;
+        }
+    }
+
+    /**
+     * Starts the login activity
+     */
+    private void startLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivityForResult(intent, LOGIN_RESULT);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.auth_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.login:
+                startLoginActivity();
+                return true;
+            case R.id.create_user:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
