@@ -8,6 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView wallContainer;
     private WallViewModel wallViewModel;
     private SwipeRefreshLayout refreshLayout;
+    private FloatingActionButton button;
     private User user;
 
     @Override
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         wallContainer = findViewById(R.id.wall_container);
         wallViewModel = ViewModelProviders.of(this).get(MainActivity.WallViewModel.class);
         refreshLayout = findViewById(R.id.swipeRefresh);
+        button = findViewById(R.id.new_post_button);
 
         refreshLayout.setOnRefreshListener(new OnRefreshWallListener());
 
@@ -99,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Get the logged user from the Login activity
+     * Get the logged user from the Login activity, shows the create posts button, redraw the
+     * options menu
      *
      * @see android.preference.PreferenceManager.OnActivityResultListener
      */
@@ -110,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
             case LOGIN_RESULT:
                 if (data != null && resultCode == Activity.RESULT_OK) {
                     user = (User) data.getSerializableExtra("user");
+                    button.setVisibility(View.VISIBLE);
+                    invalidateOptionsMenu();
                 }
                 break;
         }
@@ -131,10 +138,23 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, LOGIN_RESULT);
     }
 
+    /**
+     * Logs the user out, hides the new post button, redraws the options menu
+     */
+    private void logout() {
+        user = null;
+        button.setVisibility(View.GONE);
+        invalidateOptionsMenu();
+    }
+
+    /**
+     * Selects the menu to display depending in the user login status
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.auth_menu, menu);
+        int resourceId = (user == null) ? R.menu.auth_menu : R.menu.logout_menu;
+        inflater.inflate(resourceId, menu);
         return true;
     }
 
@@ -147,6 +167,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.create_user:
                 startCreateUserActivity();
+                return true;
+            case R.id.logout:
+                logout();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
