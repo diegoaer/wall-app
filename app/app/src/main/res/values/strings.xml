@@ -16,6 +16,7 @@
     <string name="create_wall_user">Join (very) exclusive MagicWall</string>
     <string name="email">Email</string>
     <string name="create_user">Create User</string>
+    <string name="logout">Logout</string>
 
     <string name="an_error_occurred">An error occurred: %1$s</string>
 </resources>
