@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
             user = new User()
                     .setUsername(usernameView.getText().toString())
                     .setPassword(passwordView.getText().toString());
-            LiveData<User> data = APIConnection.getInstance().tokenAuth(user);
+            LiveData<User> data = APIConnection.getInstance().tokenAuth(user, this);
             data.observe(this, new Observer<User>() {
                 @Override
                 public void onChanged(User loggedUser) {

@@ -1,6 +1,7 @@
 package gt.com.diego.wallapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        wallViewModel.updatePosts();
+        wallViewModel.updatePosts(MainActivity.this);
         refreshLayout.setRefreshing(true);
     }
 
@@ -188,8 +189,8 @@ public class MainActivity extends AppCompatActivity {
             posts = new ArrayList<>();
         }
 
-        private void updatePosts() {
-            APIConnection.getInstance().getPosts(newPostList);
+        private void updatePosts(Context context) {
+            APIConnection.getInstance().getPosts(newPostList, context);
         }
     }
 
@@ -200,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         public void onRefresh() {
-            wallViewModel.updatePosts();
+            wallViewModel.updatePosts(MainActivity.this);
         }
     }
 }

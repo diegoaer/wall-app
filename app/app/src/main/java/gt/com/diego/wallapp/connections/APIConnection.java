@@ -1,6 +1,7 @@
 package gt.com.diego.wallapp.connections;
 
-import android.util.Log;
+import android.content.Context;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -8,9 +9,9 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import gt.com.diego.wallapp.R;
 import gt.com.diego.wallapp.api.APIEndpointInterface;
 import gt.com.diego.wallapp.content.Post;
 import gt.com.diego.wallapp.content.User;
@@ -54,20 +55,21 @@ public class APIConnection {
         return instance;
     }
 
-    public LiveData<String> createUser(User user) {
+    public LiveData<String> createUser(User user, final Context context) {
         final MutableLiveData<String> creationResponse = new MutableLiveData<>();
         apiService.createUser(user).enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful()) {
                     creationResponse.setValue("");
+                } else {
+                    createErrorToast(context, response.message());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                Log.e("API", t.getMessage());
-                t.printStackTrace();
+                createErrorToast(context, t.getMessage());
             }
         });
         return creationResponse;
@@ -78,21 +80,28 @@ public class APIConnection {
      *
      * @param user the user to be logged in
      */
-    public LiveData<User> tokenAuth(User user) {
+    public LiveData<User> tokenAuth(User user, final Context context) {
         final MutableLiveData<User> responseToken = new MutableLiveData<>();
         apiService.tokenAuth(user).enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull
                     Response<User> response) {
-                if (response.isSuccessful()) {
-                    responseToken.setValue(response.body());
+                switch (response.code()) {
+                    case 201:
+                        responseToken.setValue(response.body());
+                        break;
+                    case 400:
+                        createErrorToast(context, context.getString(R.string.wrong_password));
+                        break;
+                    default:
+                        createErrorToast(context, response.message());
+                        break;
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                Log.e("API", t.getMessage());
-                t.printStackTrace();
+                createErrorToast(context, t.getMessage());
             }
         });
         return responseToken;
@@ -101,7 +110,7 @@ public class APIConnection {
     /**
      * Gets the posts from the server and adds it to the LiveData
      */
-    public void getPosts(final MutableLiveData<List<Post>> responseData) {
+    public void getPosts(final MutableLiveData<List<Post>> responseData, final Context context) {
         apiService.postList(lastUpdate).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(@NonNull Call<List<Post>> call,
@@ -113,14 +122,15 @@ public class APIConnection {
                     responseData.setValue(responseBody);
                 } else {
                     responseData.setValue(null);
+                    if (!response.isSuccessful())
+                        createErrorToast(context, response.message());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
                 responseData.setValue(null);
-                Log.e("API", t.getMessage());
-                t.printStackTrace();
+                createErrorToast(context, t.getMessage());
             }
         });
     }
@@ -131,20 +141,26 @@ public class APIConnection {
      * @param post the post to be created
      * @param auth the authentication string
      */
-    public LiveData<Integer> postPost(Post post, String auth) {
+    public LiveData<Integer> postPost(Post post, String auth, final Context context) {
         final MutableLiveData<Integer> responseCode = new MutableLiveData<>();
         apiService.createPost(post, auth).enqueue(new Callback<Post>() {
             @Override
-            public void onResponse(@Nullable Call<Post> call, @Nullable Response<Post> response) {
-                if (response != null) responseCode.setValue(response.code());
+            public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
+                if (response.code() != 201) responseCode.setValue(response.code());
+                else createErrorToast(context, response.message());
             }
 
             @Override
-            public void onFailure(@Nullable Call<Post> call, @Nullable Throwable t) {
-                responseCode.setValue(-1);
+            public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
+                createErrorToast(context, t.getMessage());
             }
         });
         return responseCode;
+    }
+
+    private void createErrorToast(Context context, String message) {
+        String toastMessage = context.getString(R.string.an_error_occurred, message);
+        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
     }
 
 }

@@ -17,6 +17,7 @@
     <string name="email">Email</string>
     <string name="create_user">Create User</string>
     <string name="please_log_in">Please log in</string>
+    <string name="wrong_password">Wrong Username/Password</string>
     <string name="logout">Logout</string>
 
     <string name="an_error_occurred">An error occurred: %1$s</string>

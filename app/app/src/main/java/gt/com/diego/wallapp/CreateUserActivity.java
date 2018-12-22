@@ -37,7 +37,7 @@ public class CreateUserActivity extends AppCompatActivity {
                     .setPassword(passwordView.getText().toString())
                     .setUsername(usernameView.getText().toString())
                     .setEmail(emailView.getText().toString());
-            LiveData<String> data = APIConnection.getInstance().createUser(user);
+            LiveData<String> data = APIConnection.getInstance().createUser(user, this);
             data.observe(this, new Observer<String>() {
                 @Override
                 public void onChanged(String response) {
