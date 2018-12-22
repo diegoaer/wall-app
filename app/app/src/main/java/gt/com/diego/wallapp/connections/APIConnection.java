@@ -5,8 +5,14 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -15,6 +21,7 @@ import gt.com.diego.wallapp.R;
 import gt.com.diego.wallapp.api.APIEndpointInterface;
 import gt.com.diego.wallapp.content.Post;
 import gt.com.diego.wallapp.content.User;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,6 +69,8 @@ public class APIConnection {
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful()) {
                     creationResponse.setValue("");
+                } else if (response.errorBody() != null) {
+                    createDetailedErrorToast(context, response.errorBody());
                 } else {
                     createErrorToast(context, response.message());
                 }
@@ -86,16 +95,12 @@ public class APIConnection {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull
                     Response<User> response) {
-                switch (response.code()) {
-                    case 201:
-                        responseToken.setValue(response.body());
-                        break;
-                    case 400:
-                        createErrorToast(context, context.getString(R.string.wrong_password));
-                        break;
-                    default:
-                        createErrorToast(context, response.message());
-                        break;
+                if (response.isSuccessful()) {
+                    responseToken.setValue(response.body());
+                } else if (response.errorBody() != null) {
+                    createDetailedErrorToast(context, response.errorBody());
+                } else {
+                    createErrorToast(context, response.message());
                 }
             }
 
@@ -158,9 +163,43 @@ public class APIConnection {
         return responseCode;
     }
 
+    /**
+     * Creates a simple toast with an error message
+     *
+     * @param context the context in which to display the toast
+     * @param message the extra message that will be displayed in the toast
+     */
     private void createErrorToast(Context context, String message) {
         String toastMessage = context.getString(R.string.an_error_occurred, message);
         Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Creates a toast for specific errors
+     *
+     * @param context      the context in which to display the toast
+     * @param responseBody the body of the error response
+     */
+    private void createDetailedErrorToast(Context context, @NonNull ResponseBody responseBody) {
+        try {
+            String errorBody = responseBody.string();
+            JsonParser parser = new JsonParser();
+            JsonObject jsonObject = parser.parse(errorBody).getAsJsonObject();
+            Set<Map.Entry<String, JsonElement>> entries = jsonObject.entrySet();
+            Map.Entry<String, JsonElement> entry = entries.iterator().next();
+            String message;
+            if (entry.getValue().isJsonArray())
+                message = entry.getValue().getAsJsonArray().get(0).getAsString();
+            else
+                message = entry.getValue().getAsString();
+            String fieldWithIssue = "";
+            if (!entry.getKey().equals("non_field_errors"))
+                fieldWithIssue = entry.getKey();
+            String toastMessage = fieldWithIssue + message;
+            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
