@@ -8,4 +8,6 @@
     <string name="create_new_post">Oh! MagicWall I want to tell you&#8230;</string>
     <string name="content">Content</string>
     <string name="say_to_wall">Say to the wall!</string>
+
+    <string name="an_error_occurred">An error occurred: %1$s</string>
 </resources>

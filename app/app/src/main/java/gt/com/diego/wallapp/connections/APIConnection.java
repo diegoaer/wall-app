@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import gt.com.diego.wallapp.api.APIEndpointInterface;
@@ -108,19 +109,20 @@ public class APIConnection {
      * @param post the post to be created
      * @param auth the authentication string
      */
-    public void postPost(Post post, String auth) {
+    public LiveData<Integer> postPost(Post post, String auth) {
+        final MutableLiveData<Integer> responseCode = new MutableLiveData<>();
         apiService.createPost(post, auth).enqueue(new Callback<Post>() {
             @Override
-            public void onResponse(Call<Post> call, Response<Post> response) {
-                Log.e("API", response.code() + "");
+            public void onResponse(@Nullable Call<Post> call, @Nullable Response<Post> response) {
+                if (response != null) responseCode.setValue(response.code());
             }
 
             @Override
-            public void onFailure(Call<Post> call, Throwable t) {
-                Log.e("API", t.getMessage());
-                t.printStackTrace();
+            public void onFailure(@Nullable Call<Post> call, @Nullable Throwable t) {
+                responseCode.setValue(-1);
             }
         });
+        return responseCode;
     }
 
 }
