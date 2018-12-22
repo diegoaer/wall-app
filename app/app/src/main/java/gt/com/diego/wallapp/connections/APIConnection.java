@@ -54,6 +54,25 @@ public class APIConnection {
         return instance;
     }
 
+    public LiveData<String> createUser(User user) {
+        final MutableLiveData<String> creationResponse = new MutableLiveData<>();
+        apiService.createUser(user).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if (response.isSuccessful()) {
+                    creationResponse.setValue("");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                Log.e("API", t.getMessage());
+                t.printStackTrace();
+            }
+        });
+        return creationResponse;
+    }
+
     /**
      * Logs a user in
      *
