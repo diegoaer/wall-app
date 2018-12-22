@@ -23,6 +23,7 @@ import gt.com.diego.wallapp.content.Post;
 import gt.com.diego.wallapp.content.User;
 
 public class MainActivity extends AppCompatActivity {
+    private final int LOGIN_RESULT = 0;
     private WallAdapter wallAdapter;
     private RecyclerView wallContainer;
     private WallViewModel wallViewModel;
@@ -92,6 +93,23 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         wallViewModel.updatePosts();
         refreshLayout.setRefreshing(true);
+    }
+
+    /**
+     * Get the logged user from the Login activity
+     *
+     * @see android.preference.PreferenceManager.OnActivityResultListener
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case LOGIN_RESULT:
+                if (data != null && resultCode == Activity.RESULT_OK) {
+                    user = (User) data.getSerializableExtra("user");
+                }
+                break;
+        }
     }
 
     /**
