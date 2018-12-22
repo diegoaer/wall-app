@@ -33,6 +33,7 @@
             android:clickable="true"
             android:focusable="true"
             android:onClick="openCreatePostActivity"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_add_white_24dp" />
 
     </RelativeLayout>
