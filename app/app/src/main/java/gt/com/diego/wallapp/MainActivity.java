@@ -123,6 +123,14 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, LOGIN_RESULT);
     }
 
+    /**
+     * Starts the create user activity
+     */
+    private void startCreateUserActivity() {
+        Intent intent = new Intent(this, CreateUserActivity.class);
+        startActivityForResult(intent, LOGIN_RESULT);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -138,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 startLoginActivity();
                 return true;
             case R.id.create_user:
+                startCreateUserActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
