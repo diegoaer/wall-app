@@ -1,5 +1,6 @@
 package gt.com.diego.wallapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,12 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import gt.com.diego.wallapp.connections.APIConnection;
 import gt.com.diego.wallapp.content.Post;
+import gt.com.diego.wallapp.content.User;
 
 public class MainActivity extends AppCompatActivity {
     private WallAdapter wallAdapter;
     private RecyclerView wallContainer;
     private WallViewModel wallViewModel;
     private SwipeRefreshLayout refreshLayout;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public void openCreatePostActivity(View view) {
         Intent intent = new Intent(this, CreatePostActivity.class);
-        startActivity(intent);
+        intent.putExtra("user", user);
+        startActivityForResult(intent, LOGIN_RESULT);
     }
 
     /**

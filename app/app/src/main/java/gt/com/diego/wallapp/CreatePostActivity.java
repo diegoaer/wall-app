@@ -21,14 +21,7 @@ public class CreatePostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
-        user = new User("admin", "admin");
-        LiveData<User> data = APIConnection.getInstance().tokenAuth(user);
-        data.observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(User loggedUser) {
-                user.setToken(loggedUser.getToken());
-            }
-        });
+        user = (User) getIntent().getSerializableExtra("user");
     }
 
     public void postAndClose(View view) {
