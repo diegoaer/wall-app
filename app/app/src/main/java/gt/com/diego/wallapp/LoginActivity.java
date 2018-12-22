@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     public void login(View view) {
         if (usernameView.getText() != null && passwordView.getText() != null) {
             user = new User()
-                    .setEmail(usernameView.getText().toString())
+                    .setUsername(usernameView.getText().toString())
                     .setPassword(passwordView.getText().toString());
             LiveData<User> data = APIConnection.getInstance().tokenAuth(user);
             data.observe(this, new Observer<User>() {
