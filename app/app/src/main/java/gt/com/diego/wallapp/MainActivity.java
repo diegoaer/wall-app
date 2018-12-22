@@ -67,13 +67,27 @@ public class MainActivity extends AppCompatActivity {
                     wallViewModel.posts.addAll(newPosts);
                     wallAdapter.notifyDataSetChanged();
                 }
+                refreshLayout.setRefreshing(false);
             }
         });
     }
 
+    /**
+     * Starts a CreatePostActivity
+     */
     public void openCreatePostActivity(View view) {
         Intent intent = new Intent(this, CreatePostActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * When the app starts/resumes update posts
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        wallViewModel.updatePosts();
+        refreshLayout.setRefreshing(true);
     }
 
     /**
@@ -86,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         public WallViewModel() {
             newPostList = new MutableLiveData<>();
             posts = new ArrayList<>();
-            updatePosts();
         }
 
         private void updatePosts() {
@@ -102,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onRefresh() {
             wallViewModel.updatePosts();
-            refreshLayout.setRefreshing(false);
         }
     }
 }

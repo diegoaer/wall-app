@@ -92,11 +92,14 @@ public class APIConnection {
                     List<Post> responseBody = response.body();
                     lastUpdate = responseBody.get(responseBody.size() - 1).getId();
                     responseData.setValue(responseBody);
+                } else {
+                    responseData.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
+                responseData.setValue(null);
                 Log.e("API", t.getMessage());
                 t.printStackTrace();
             }
